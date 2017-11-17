@@ -14,6 +14,7 @@ for filename in os.listdir(path):
 			if gtype != "game" and gtype != "dlc":
 				continue
 			if "categories" in gdata:
+				print game_id
 				for x in gdata["categories"]:
 					if x["description"] not in gcats:
 						gcats.append(x["description"])

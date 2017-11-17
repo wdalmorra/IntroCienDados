@@ -7,12 +7,17 @@ counter = 0
 counter_g = 0
 counter_d = 0
 
-final_row = []
 
-all_genres = ["Action","Free to Play", "Indie", "Strategy", "Casual", "Adventure", "Simulation", "Sports", "Racing", "RPG", "Education", "Violent", "Gore", "Massively Multiplayer", "Early Access", "Audio Production", "Software Training", "Utilities", "Video Production", "Sexual Content", "Nudity", "Animation & Modeling", "Design & Illustration", "Photo Editing", "Web Publishing", "Accounting", "Ação", "Aventura"]
-all_categories = ["Single-player", "Multi-player", "Online Multi-Player", "Co-op", "Online Co-op", "Downloadable Content", "Steam Achievements", "In-App Purchases", "Steam Leaderboards", "Steam Trading Cards", "Steam Cloud", "Full controller support", "Partial Controller Support", "Shared/Split Screen", "Cross-Platform Multiplayer", "Local Multi-Player", "Local Co-op", "Stats", "MMO", "Steam Workshop", "Captions available", "Valve Anti-Cheat enabled", "Includes level editor", "Steam Turn Notifications", "VR Support", "SteamVR Collectibles", "Includes Source SDK", "Commentary available", "Um jogador", "Compatibilidade total com controle", "Mods"]
+columns = ["id", "nome", "tipo", "idade_min", "n_ling_sup", "moeda", "preco_orig", "preco_desc", "windows", "mac", "linux", "score_metac", "n_generos", "Action","Free to Play", "Indie", "Strategy", "Casual", "Adventure", "Simulation", "Sports", "Racing", "RPG", "Education", "Violent", "Gore", "Massively Multiplayer", "Early Access", "Audio Production", "Software Training", "Utilities", "Video Production", "Sexual Content", "Nudity", "Animation & Modeling", "Design & Illustration", "Photo Editing", "Web Publishing", "Accounting", "n_categorias", "Single-player", "Multi-player", "Online Multi-Player", "Co-op", "Online Co-op", "Downloadable Content", "Steam Achievements", "In-App Purchases", "Steam Leaderboards", "Steam Trading Cards", "Steam Cloud", "Full controller support", "Partial Controller Support", "Shared/Split Screen", "Cross-Platform Multiplayer", "Local Multi-Player", "Local Co-op", "Stats", "MMO", "Steam Workshop", "Captions available", "Valve Anti-Cheat enabled", "Includes level editor", "Steam Turn Notifications", "VR Support", "SteamVR Collectibles", "Includes Source SDK", "Commentary available", "Mods", "n_recomendacoes", "n_achievements", "data_lancamento"]
+with open("output.csv", 'wb') as myfile:
+	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+	wr.writerow(columns)
+
+all_genres = ["Action","Free to Play", "Indie", "Strategy", "Casual", "Adventure", "Simulation", "Sports", "Racing", "RPG", "Education", "Violent", "Gore", "Massively Multiplayer", "Early Access", "Audio Production", "Software Training", "Utilities", "Video Production", "Sexual Content", "Nudity", "Animation & Modeling", "Design & Illustration", "Photo Editing", "Web Publishing", "Accounting"]
+all_categories = ["Single-player", "Multi-player", "Online Multi-Player", "Co-op", "Online Co-op", "Downloadable Content", "Steam Achievements", "In-App Purchases", "Steam Leaderboards", "Steam Trading Cards", "Steam Cloud", "Full controller support", "Partial Controller Support", "Shared/Split Screen", "Cross-Platform Multiplayer", "Local Multi-Player", "Local Co-op", "Stats", "MMO", "Steam Workshop", "Captions available", "Valve Anti-Cheat enabled", "Includes level editor", "Steam Turn Notifications", "VR Support", "SteamVR Collectibles", "Includes Source SDK", "Commentary available", "Mods"]
 for filename in os.listdir(path): 
-    with open(path+filename) as data_file:
+	final_row = []
+	with open(path+filename) as data_file:
 		game = json.load(data_file)
 		game_id = filename.split("=")[1]
 		if game[game_id]["success"] == True:
@@ -66,10 +71,14 @@ for filename in os.listdir(path):
 			grel_date = gdata["release_date"]["date"]
 
 			final_row.append(gappid)
-			final_row.append(gname)
+			final_row.append(gname.encode("utf-8"))
+			print gname.encode("utf-8")
 			final_row.append(gtype)
 			final_row.append(greq_age)
-			final_row.append(gsup_lang)
+			if gsup_lang != None:
+				final_row.append(len(gsup_lang.split(",")))
+			else:
+				final_row.append(0)
 			final_row.append(gprice_curr)
 			final_row.append(gprice_init)
 			final_row.append(gprice_final)
@@ -77,29 +86,23 @@ for filename in os.listdir(path):
 			final_row.append(gplat_mac)
 			final_row.append(gplat_lin)
 			final_row.append(gscore)
-			for x in all_categories:
-				if x in gcats:
-					final_row.append(True)
-				else:
-					final_row.append(False)
+			final_row.append(len(ggenres))
 			for x in all_genres:
 				if x in ggenres:
 					final_row.append(True)
 				else:
 					final_row.append(False)
+			final_row.append(len(gcats))
+			for x in all_categories:
+				if x in gcats:
+					final_row.append(True)
+				else:
+					final_row.append(False)
 			final_row.append(grecom)
 			final_row.append(gachiev)
-			final_row.append(grel_date)
+			final_row.append(grel_date.encode("utf-8"))
 
-	with open("output.csv", 'wb') as myfile:
-    	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-    	wr.writerow(final_row)
-
-    break
-
-
-print counter
-print counter_g
-print counter_d
-
-			
+			with open("output.csv", 'a') as myfile:
+				wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+				# print final_row
+				wr.writerow(final_row)			

@@ -1,7 +1,7 @@
+#encoding: utf-8
 import os
 import json
 path = './raw_data/'
-
 ggenres = []
 for filename in os.listdir(path):
     with open(path+filename) as data_file:
@@ -14,6 +14,8 @@ for filename in os.listdir(path):
 			if gtype != "game" and gtype != "dlc":
 				continue
 			if "genres" in gdata:
+				print game_id
+				# print gdata["genres"]
 				for x in gdata["genres"]:
 					if x["description"] not in ggenres:
 						ggenres.append(x["description"])
